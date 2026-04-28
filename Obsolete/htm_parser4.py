@@ -12,84 +12,11 @@ from bs4 import BeautifulSoup
 from typing import List, Dict
 import yaml
 
-import logging
-from logging.handlers import TimedRotatingFileHandler
-from datetime import datetime
-
-def setup_logger():
-    base_path = get_base_path()
-    log_dir = os.path.join(base_path, "logs")
-    os.makedirs(log_dir, exist_ok=True)
-
-    log_file = os.path.join(
-        log_dir,
-        f"app_{datetime.now().strftime('%Y-%m-%d')}.log"
-    )
-
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
-
-    # 防止重复添加 handler（pyinstaller 有时会发生）
-    if logger.handlers:
-        return logger
-
-    formatter = logging.Formatter(
-        "%(asctime)s | %(levelname)-5s | %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
-    )
-
-    # 文件日志（按天滚动，保留 14 天）
-    file_handler = TimedRotatingFileHandler(
-        log_file,
-        when="midnight",
-        interval=1,
-        backupCount=14,
-        encoding="utf-8",
-        delay=True       #关键：防止 Windows 文件锁问题
-    )
-    file_handler.setFormatter(formatter)
-    file_handler.setLevel(logging.INFO)
-
-    # 控制台日志（方便调试 exe）
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(formatter)
-    console_handler.setLevel(logging.INFO)
-
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
-
-    return logger
-
-def apply_log_level(config):
-    level = config.get("log", {}).get("level", "INFO").upper()
-    logging.getLogger().setLevel(
-        getattr(logging, level, logging.INFO)
-    )
-
-def get_base_path():
-    """
-    兼容：
-    - python htm_parser.py
-    - 打包后的 htm_parser.exe
-    """
-    if getattr(sys, 'frozen', False):
-        # exe 运行目录
-        return os.path.dirname(sys.executable)
-    else:
-        # 脚本运行目录
-        return os.path.dirname(os.path.abspath(__file__))
-
 def load_config(config_path: str = "config.yaml") -> dict:
-    base_path = get_base_path()
-    full_config_path = os.path.join(base_path, config_path)
-
     default_config = {
         "paths": {
-            "input_dir": "Input",
+            "input_dir": "Docs",
             "output_dir": "Output"
-        },
-        "process": {
-            "overwrite": False
         },
         "keywords": {
             "remark_start": ["备注"],
@@ -102,19 +29,14 @@ def load_config(config_path: str = "config.yaml") -> dict:
             "mark": ["标明"]
         }
     }
-    
-    logger = logging.getLogger()
 
-    if not os.path.exists(full_config_path):
-        logger.warning(f"Config not found, using default: {full_config_path}")
+    if not os.path.exists(config_path):
         return default_config
 
-    logger.info(f"Config loaded from: {full_config_path}")   
-
-    with open(full_config_path, "r", encoding="utf-8") as f:
+    with open(config_path, "r", encoding="utf-8") as f:
         user_cfg = yaml.safe_load(f) or {}
 
-    # 浅合并（目前够用）
+    # 简单 merge（浅合并，已够用）
     for k, v in default_config.items():
         if k not in user_cfg:
             user_cfg[k] = v
@@ -412,7 +334,66 @@ class DeliveryNoteParser:
     # ----------------------------
     # 项目解析（多页安全）
     # ----------------------------
-    
+    """
+    def _parse_items(self) -> List[Dict]:
+        items = []
+        i = 0
+
+        while i < len(self.lines):
+            m = ITEM_LINE_RE.match(self.lines[i])
+            if not m:
+                i += 1
+                continue
+
+            item = {
+                "项目行号": m.group(1),
+                "零件号": m.group(2),
+                "名字": "",
+                "贵方零件号": "",
+                "贵方订单号": "",
+                "要求到货日期": "",
+                "数量": "",
+                "Our Order No.": ""
+            }
+
+            rest = m.group(3)
+            qty = re.search(r"(\d+)\s*EA", rest)
+            if qty:
+                item["数量"] = qty.group(1)
+                item["名字"] = rest[:qty.start()].strip()
+            else:
+                item["名字"] = rest.strip()
+
+            j = i + 1
+
+
+            # 第一子行：按位置切割
+            if j < len(self.lines) and not ITEM_LINE_RE.match(self.lines[j]):
+                sub = self.lines[j]
+                nums = re.findall(r"\b[A-Z0-9\-]{6,}\b", sub)
+
+                if len(nums) >= 1:
+                    item["贵方零件号"] = nums[0]
+                if len(nums) >= 2:
+                    item["贵方订单号"] = nums[1]
+                if len(nums) >= 3:
+                    item["Our Order No."] = nums[-1]
+
+                j += 1
+                     
+                       
+            # 吞剩余行（日期等）
+            while j < len(self.lines) and not ITEM_LINE_RE.match(self.lines[j]):
+                m_date = DATE_RE.search(self.lines[j])
+                if m_date:
+                    item["要求到货日期"] = m_date.group()
+                j += 1
+
+            items.append(item)
+            i = j
+
+        return items
+        """
     def _parse_items(self) -> List[Dict]:
         items = []
         i = 0
@@ -423,6 +404,9 @@ class DeliveryNoteParser:
                 i += 1
                 continue
 
+            # ===============================
+            # 1️⃣ 项目主行
+            # ===============================
             item = {
                 "项目行号": m.group(1),
                 "零件号": m.group(2),
@@ -434,83 +418,97 @@ class DeliveryNoteParser:
                 "数量": ""
             }
 
+            main_line = self.raw_lines[i]
+
             rest = m.group(3)
 
-            # ---------- 数量 ----------
+            # 1️⃣ 数量
             qty = re.search(r"(\d+)\s*EA", rest)
             if qty:
                 item["数量"] = qty.group(1)
 
-            # ---------- 国家（不写死） ----------
+            # 2️⃣ 国家（不写死）
             m_country = re.search(r"\b[A-Z]{2}\b", rest)
 
-            # ---------- 名字边界 ----------
+            # 3️⃣ 名字的边界规则
             if m_country:
+                # 名字在 国家 之前
                 item["名字"] = rest[:m_country.start()].strip()
             elif qty:
+                # fallback：没有国家，用 EA
                 item["名字"] = rest[:qty.start()].strip()
             else:
                 item["名字"] = rest.strip()
 
+            # 4️⃣ 统一清洗
             item["名字"] = self._clean_text(item["名字"])
+                       
 
-            # ---------- 扫描子行 ----------
+            # ===============================
+            # 2️⃣ 计算列起始位置（基于主行）
+            # ===============================
+            # 核心思想：后续子行按这些 index 对齐切割
+            col_pos = {
+                "part_no": main_line.find(item["零件号"]),
+                "name": main_line.find(item["名字"]) if item["名字"] else None,
+                "country": main_line.find("CN") if "CN" in main_line else None,
+            }
+
+            # fallback：防止 find 失败
+            col_pos["name"] = col_pos["name"] if col_pos["name"] != -1 else None
+            col_pos["country"] = col_pos["country"] if col_pos["country"] != -1 else None
+
+            # ===============================
+            # 3️⃣ 扫描子行区块（订单 / 日期 / colli）
+            # ===============================
             j = i + 1
+            order_parsed = False
 
             while j < len(self.raw_lines) and not ITEM_LINE_RE.match(self.raw_lines[j]):
-                line = self.raw_lines[j].strip()
+                line = self.raw_lines[j]
 
-                # 🚧 项目内硬边界：colli
-                if line.lower().startswith("colli"):
-                    break  # ✅ 当前项目结束，直接跳出子行扫描
-
-                # ✅ 订单子行解析（只要 Our Order No. 还没拿到就继续）
-                if not item["Our Order No."]:
-                    cols = re.split(r"\s{2,}", line)
+                # ---------- 3.1 订单子行（按列切割，只解析一次） ----------
+                if not order_parsed:
+                    # ✅ 用“多空格分列”解析订单子行
+                    cols = re.split(r"\s{2,}", line.strip())
                     cols = [c for c in cols if c]
 
-                    found = False
-
-                    # 1️⃣ 表格对齐型（多空格）
+                    # 从右往左找 Our Order No.（必须是纯数字）
                     for idx in range(len(cols) - 1, -1, -1):
                         if re.fullmatch(r"\d{6,}", cols[idx]):
                             item["Our Order No."] = cols[idx]
 
                             left = cols[:idx]
+
                             if left:
                                 item["贵方订单号"] = self._clean_text(left[-1])
                             if len(left) >= 2:
                                 item["贵方零件号"] = self._clean_text(left[-2])
 
-                            found = True
+                            order_parsed = True
+                            j += 1
                             break
 
-                    # 2️⃣ fallback：单空格压缩型（6275）
-                    if not found:
-                        nums = re.findall(r"\b\d{6,}\b", line)
-                        if nums:
-                            item["Our Order No."] = nums[-1]
+                    if order_parsed:
+                        continue
 
-                            prefix = line[:line.rfind(nums[-1])].strip()
-                            parts = prefix.split()
-
-                            if parts:
-                                item["贵方订单号"] = self._clean_text(parts[-1])
-                            if len(parts) >= 2:
-                                item["贵方零件号"] = self._clean_text(parts[-2])
-
-                # ✅ 日期行
+                # ---------- 3.2 日期行 ----------
                 m_date = DATE_RE.search(line)
                 if m_date:
                     item["要求到货日期"] = m_date.group()
+                    j += 1
+                    continue
 
+                # ---------- 3.3 其它说明行（colli 等） ----------
                 j += 1
 
+            # ===============================
+            # 4️⃣ 收尾
+            # ===============================
             items.append(item)
-            i = j
+            i = j  # 跳到下一个 ITEM
 
-        return items    
-    
+        return items
 
 # ----------------------------
 # CLI
@@ -522,78 +520,24 @@ def process_all_htm_files(input_dir: str, output_dir: str, config: dict):
     for file in os.listdir(input_dir):
         if not file.lower().endswith(".htm"):
             continue
-        
-        try:
-        
-            path = os.path.join(input_dir, file)
-            parser = DeliveryNoteParser(path, config)
-            result = parser.parse()
 
-            out_path = os.path.join(output_dir, file.replace(".htm", ".json"))
-            
-            overwrite = config.get("process", {}).get("overwrite", False)
-   
-            if os.path.exists(out_path) and overwrite:
-                bak = out_path + f".bak.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-                os.replace(out_path, bak)
-                logger.warning(f"[BACKUP] {out_path} -> {bak}")
-            
-            if os.path.exists(out_path) and not overwrite:
-                logger.info(f"[SKIP] {file} already parsed-> {out_path} ")
-                continue
-            
-            with open(out_path, "w", encoding="utf-8") as f:
-                json.dump(result, f, ensure_ascii=False, indent=2)
-            
-            logger.info(f"[OK] {file} -> {out_path}")  
+        path = os.path.join(input_dir, file)
+        parser = DeliveryNoteParser(path, config)
+        result = parser.parse()
 
-        except Exception:
-            logger.exception(f"[FAIL]{file}")
+        out_path = os.path.join(output_dir, file.replace(".htm", ".json"))
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
 
+        print(f"[OK] {file} -> {out_path}")
 
-
-# ----------------------------
-# Main
-# ----------------------------
-def main():
-    
-    logger.info("Program started")
-    logger.info(f"Base path: {get_base_path()}")
-    logger.info(f"Python version: {sys.version}")
-
-    cfg = load_config()
-    apply_log_level(cfg)
-    
-    """
-    logger.debug(
-        f"Config summary: paths={cfg.get('paths')}, "
-        f"remark_keys={cfg.get('keywords', {}).get('remark_start')}"
-    )
-    """
-    
-    input_dir = cfg["paths"].get("input_dir", "Input")
-    output_dir = cfg["paths"].get("output_dir", "Output")
-    
-    if not os.path.exists(input_dir):
-        logger.error(f"Input directory not found: {input_dir}")
-        return
-    
-    logger.info(f"Input_dir : {input_dir}")
-    logger.info(f"Output_dir: {output_dir}")
-
-    try:
-        # 核心解析逻辑
-        process_all_htm_files(input_dir, output_dir, cfg)
-        
-    except Exception as e:
-        logger.exception("Unexpected error while parsing file")
-
-    logger.info("Program finished")
 
 if __name__ == "__main__":
         
-    logger = setup_logger()
-        
-    main()
+    cfg = load_config()
     
+    input_dir = cfg["paths"].get("input_dir", "Docs")
+    output_dir = cfg["paths"].get("output_dir", "Output")
+
+    process_all_htm_files(input_dir, output_dir, cfg)
     

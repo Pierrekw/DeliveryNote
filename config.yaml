@@ -1,0 +1,45 @@
+﻿# =========================
+# Delivery Note Parser Config
+# =========================
+
+paths:
+  input_dir: Input #放置htm的文件夹地址
+  output_dir: Output #输出JSON文件的文件夹地址
+
+log:
+  level: INFO   # INFO / DEBUG
+  
+process:
+  overwrite: false  # 是否覆盖已解析文件
+
+keywords:
+  remark_start:
+    - 备注
+
+  remark_end:
+    - 项目零件号
+    - 项目
+    - Pos.
+
+  shipping:
+    contact:
+      - 联系人
+      - 收货人
+    address:
+      - 发货地址
+      - 收货地址
+    phone:
+      - 联系电话
+
+  mark:
+    - 标明
+    
+address_clean:
+  strip_quotes: true
+  prefixes:
+    - 收货地址：
+    - 发货地址：
+    - 地址：
+    - 1.发票、发货地址：
+    - 1.发票,发货地址：
+    - 发票、发货地址：

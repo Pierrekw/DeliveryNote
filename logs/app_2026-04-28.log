@@ -1,0 +1,188 @@
+2026-04-28 11:09:09 | INFO  | Program started
+2026-04-28 11:09:09 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 11:09:09 | INFO  | Program running...
+2026-04-28 11:09:09 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 11:10:21 | INFO  | Program started
+2026-04-28 11:10:21 | INFO  | Program running...
+2026-04-28 11:10:21 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 11:10:57 | INFO  | Program running...
+2026-04-28 11:10:57 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:11:31 | INFO  | Program started
+2026-04-28 13:11:31 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:11:31 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:11:31 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:11:31 | INFO  | Input_dir : Input
+2026-04-28 13:11:31 | INFO  | Output_dir: Output
+2026-04-28 13:11:31 | INFO  | finished file: Delivery Note  78196275.htm
+2026-04-28 13:11:31 | INFO  | finished file: Delivery Note  78203415.htm
+2026-04-28 13:11:31 | INFO  | finished file: Delivery Note 77535479 .htm
+2026-04-28 13:11:31 | INFO  | finished file: Delivery Note 77672982 .htm
+2026-04-28 13:11:31 | INFO  | finished file: Delivery Note 77946384.htm
+2026-04-28 13:11:32 | INFO  | finished file: Delivery Note 78018807 .htm
+2026-04-28 13:11:32 | INFO  | finished file: Delivery Note 78191672 .htm
+2026-04-28 13:11:32 | INFO  | finished file: Delivery Note 78195342.htm
+2026-04-28 13:12:28 | INFO  | Program started
+2026-04-28 13:12:28 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:12:28 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:12:28 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:12:28 | INFO  | Input_dir : Input
+2026-04-28 13:12:28 | INFO  | Output_dir: Output
+2026-04-28 13:12:28 | INFO  | [OK] Delivery Note  78196275.htm -> Output\Delivery Note  78196275.json
+2026-04-28 13:12:28 | INFO  | [OK] Delivery Note  78203415.htm -> Output\Delivery Note  78203415.json
+2026-04-28 13:12:28 | INFO  | [OK] Delivery Note 77535479 .htm -> Output\Delivery Note 77535479 .json
+2026-04-28 13:12:28 | INFO  | [OK] Delivery Note 77672982 .htm -> Output\Delivery Note 77672982 .json
+2026-04-28 13:12:28 | INFO  | [OK] Delivery Note 77946384.htm -> Output\Delivery Note 77946384.json
+2026-04-28 13:12:29 | INFO  | [OK] Delivery Note 78018807 .htm -> Output\Delivery Note 78018807 .json
+2026-04-28 13:12:29 | INFO  | [OK] Delivery Note 78191672 .htm -> Output\Delivery Note 78191672 .json
+2026-04-28 13:12:29 | INFO  | [OK] Delivery Note 78195342.htm -> Output\Delivery Note 78195342.json
+2026-04-28 13:26:59 | INFO  | Program started
+2026-04-28 13:26:59 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:26:59 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:26:59 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:27:48 | INFO  | Program started
+2026-04-28 13:27:48 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:27:48 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:27:48 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:28:51 | INFO  | Program started
+2026-04-28 13:28:51 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:28:51 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:28:51 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:28:51 | INFO  | Input_dir : Input
+2026-04-28 13:28:51 | INFO  | Output_dir: Output
+2026-04-28 13:28:51 | INFO  | [OK] Delivery Note  78196275.htm -> Output\Delivery Note  78196275.json
+2026-04-28 13:28:51 | INFO  | [OK] Delivery Note  78203415.htm -> Output\Delivery Note  78203415.json
+2026-04-28 13:28:51 | INFO  | [OK] Delivery Note 77535479 .htm -> Output\Delivery Note 77535479 .json
+2026-04-28 13:28:51 | INFO  | [OK] Delivery Note 77672982 .htm -> Output\Delivery Note 77672982 .json
+2026-04-28 13:28:51 | INFO  | [OK] Delivery Note 77946384.htm -> Output\Delivery Note 77946384.json
+2026-04-28 13:28:51 | INFO  | [OK] Delivery Note 78018807 .htm -> Output\Delivery Note 78018807 .json
+2026-04-28 13:28:51 | INFO  | [OK] Delivery Note 78191672 .htm -> Output\Delivery Note 78191672 .json
+2026-04-28 13:28:52 | INFO  | [OK] Delivery Note 78195342.htm -> Output\Delivery Note 78195342.json
+2026-04-28 13:28:52 | INFO  | Program finished
+2026-04-28 13:29:56 | INFO  | Program started
+2026-04-28 13:29:56 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:29:56 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:29:56 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:29:56 | INFO  | Input_dir : Input
+2026-04-28 13:29:56 | INFO  | Output_dir: Output
+2026-04-28 13:29:56 | INFO  | [OK] Delivery Note  78196275.htm -> Output\Delivery Note  78196275.json
+2026-04-28 13:29:56 | INFO  | [OK] Delivery Note  78203415.htm -> Output\Delivery Note  78203415.json
+2026-04-28 13:29:56 | INFO  | [OK] Delivery Note 77535479 .htm -> Output\Delivery Note 77535479 .json
+2026-04-28 13:29:56 | INFO  | [OK] Delivery Note 77672982 .htm -> Output\Delivery Note 77672982 .json
+2026-04-28 13:29:56 | INFO  | [OK] Delivery Note 77946384.htm -> Output\Delivery Note 77946384.json
+2026-04-28 13:29:56 | INFO  | [OK] Delivery Note 78018807 .htm -> Output\Delivery Note 78018807 .json
+2026-04-28 13:29:56 | INFO  | [OK] Delivery Note 78191672 .htm -> Output\Delivery Note 78191672 .json
+2026-04-28 13:29:57 | INFO  | [OK] Delivery Note 78195342.htm -> Output\Delivery Note 78195342.json
+2026-04-28 13:29:57 | INFO  | Program finished
+2026-04-28 13:40:10 | INFO  | Program started
+2026-04-28 13:40:10 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:40:10 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:40:10 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:40:10 | INFO  | Input_dir : Input
+2026-04-28 13:40:10 | INFO  | Output_dir: Output
+2026-04-28 13:40:10 | INFO  | [SKIP] Delivery Note  78196275.htm -> Output\Delivery Note  78196275.json already parsed
+2026-04-28 13:40:10 | INFO  | [SKIP] Delivery Note  78203415.htm -> Output\Delivery Note  78203415.json already parsed
+2026-04-28 13:40:10 | INFO  | [SKIP] Delivery Note 77535479 .htm -> Output\Delivery Note 77535479 .json already parsed
+2026-04-28 13:40:10 | INFO  | [SKIP] Delivery Note 77672982 .htm -> Output\Delivery Note 77672982 .json already parsed
+2026-04-28 13:40:10 | INFO  | [SKIP] Delivery Note 77946384.htm -> Output\Delivery Note 77946384.json already parsed
+2026-04-28 13:40:10 | INFO  | [SKIP] Delivery Note 78018807 .htm -> Output\Delivery Note 78018807 .json already parsed
+2026-04-28 13:40:10 | INFO  | [SKIP] Delivery Note 78191672 .htm -> Output\Delivery Note 78191672 .json already parsed
+2026-04-28 13:40:10 | INFO  | [SKIP] Delivery Note 78195342.htm -> Output\Delivery Note 78195342.json already parsed
+2026-04-28 13:40:10 | INFO  | Program finished
+2026-04-28 13:40:41 | INFO  | Program started
+2026-04-28 13:40:41 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:40:41 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:40:41 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:40:41 | INFO  | Input_dir : Input
+2026-04-28 13:40:41 | INFO  | Output_dir: Output
+2026-04-28 13:40:41 | INFO  | [SKIP] Delivery Note  78196275.htm already parsed-> Output\Delivery Note  78196275.json 
+2026-04-28 13:40:41 | INFO  | [SKIP] Delivery Note  78203415.htm already parsed-> Output\Delivery Note  78203415.json 
+2026-04-28 13:40:41 | INFO  | [SKIP] Delivery Note 77535479 .htm already parsed-> Output\Delivery Note 77535479 .json 
+2026-04-28 13:40:41 | INFO  | [SKIP] Delivery Note 77672982 .htm already parsed-> Output\Delivery Note 77672982 .json 
+2026-04-28 13:40:41 | INFO  | [SKIP] Delivery Note 77946384.htm already parsed-> Output\Delivery Note 77946384.json 
+2026-04-28 13:40:41 | INFO  | [SKIP] Delivery Note 78018807 .htm already parsed-> Output\Delivery Note 78018807 .json 
+2026-04-28 13:40:41 | INFO  | [SKIP] Delivery Note 78191672 .htm already parsed-> Output\Delivery Note 78191672 .json 
+2026-04-28 13:40:41 | INFO  | [SKIP] Delivery Note 78195342.htm already parsed-> Output\Delivery Note 78195342.json 
+2026-04-28 13:40:41 | INFO  | Program finished
+2026-04-28 13:40:58 | INFO  | Program started
+2026-04-28 13:40:58 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:40:58 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:40:58 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:40:58 | INFO  | Input_dir : Input
+2026-04-28 13:40:58 | INFO  | Output_dir: Output
+2026-04-28 13:40:58 | WARNING | [BACKUP] Output\Delivery Note  78196275.json -> Output\Delivery Note  78196275.json.bak.20260428_134058
+2026-04-28 13:40:58 | INFO  | [OK] Delivery Note  78196275.htm -> Output\Delivery Note  78196275.json
+2026-04-28 13:40:58 | WARNING | [BACKUP] Output\Delivery Note  78203415.json -> Output\Delivery Note  78203415.json.bak.20260428_134058
+2026-04-28 13:40:58 | INFO  | [OK] Delivery Note  78203415.htm -> Output\Delivery Note  78203415.json
+2026-04-28 13:40:58 | WARNING | [BACKUP] Output\Delivery Note 77535479 .json -> Output\Delivery Note 77535479 .json.bak.20260428_134058
+2026-04-28 13:40:58 | INFO  | [OK] Delivery Note 77535479 .htm -> Output\Delivery Note 77535479 .json
+2026-04-28 13:40:58 | WARNING | [BACKUP] Output\Delivery Note 77672982 .json -> Output\Delivery Note 77672982 .json.bak.20260428_134058
+2026-04-28 13:40:58 | INFO  | [OK] Delivery Note 77672982 .htm -> Output\Delivery Note 77672982 .json
+2026-04-28 13:40:58 | WARNING | [BACKUP] Output\Delivery Note 77946384.json -> Output\Delivery Note 77946384.json.bak.20260428_134058
+2026-04-28 13:40:58 | INFO  | [OK] Delivery Note 77946384.htm -> Output\Delivery Note 77946384.json
+2026-04-28 13:40:58 | WARNING | [BACKUP] Output\Delivery Note 78018807 .json -> Output\Delivery Note 78018807 .json.bak.20260428_134058
+2026-04-28 13:40:58 | INFO  | [OK] Delivery Note 78018807 .htm -> Output\Delivery Note 78018807 .json
+2026-04-28 13:40:58 | WARNING | [BACKUP] Output\Delivery Note 78191672 .json -> Output\Delivery Note 78191672 .json.bak.20260428_134058
+2026-04-28 13:40:58 | INFO  | [OK] Delivery Note 78191672 .htm -> Output\Delivery Note 78191672 .json
+2026-04-28 13:40:58 | WARNING | [BACKUP] Output\Delivery Note 78195342.json -> Output\Delivery Note 78195342.json.bak.20260428_134058
+2026-04-28 13:40:58 | INFO  | [OK] Delivery Note 78195342.htm -> Output\Delivery Note 78195342.json
+2026-04-28 13:40:58 | INFO  | Program finished
+2026-04-28 13:41:27 | INFO  | Program started
+2026-04-28 13:41:27 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:41:27 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:41:27 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:41:27 | INFO  | Input_dir : Input
+2026-04-28 13:41:27 | INFO  | Output_dir: Output
+2026-04-28 13:41:27 | INFO  | [SKIP] Delivery Note  78196275.htm already parsed-> Output\Delivery Note  78196275.json 
+2026-04-28 13:41:28 | INFO  | [SKIP] Delivery Note  78203415.htm already parsed-> Output\Delivery Note  78203415.json 
+2026-04-28 13:41:28 | INFO  | [SKIP] Delivery Note 77535479 .htm already parsed-> Output\Delivery Note 77535479 .json 
+2026-04-28 13:41:28 | INFO  | [SKIP] Delivery Note 77672982 .htm already parsed-> Output\Delivery Note 77672982 .json 
+2026-04-28 13:41:28 | INFO  | [SKIP] Delivery Note 77946384.htm already parsed-> Output\Delivery Note 77946384.json 
+2026-04-28 13:41:28 | INFO  | [SKIP] Delivery Note 78018807 .htm already parsed-> Output\Delivery Note 78018807 .json 
+2026-04-28 13:41:28 | INFO  | [SKIP] Delivery Note 78191672 .htm already parsed-> Output\Delivery Note 78191672 .json 
+2026-04-28 13:41:28 | INFO  | [SKIP] Delivery Note 78195342.htm already parsed-> Output\Delivery Note 78195342.json 
+2026-04-28 13:41:28 | INFO  | Program finished
+2026-04-28 13:41:46 | INFO  | Program started
+2026-04-28 13:41:46 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:41:46 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:41:46 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:41:46 | INFO  | Input_dir : Input
+2026-04-28 13:41:46 | INFO  | Output_dir: Output
+2026-04-28 13:41:46 | INFO  | [OK] Delivery Note  78196275.htm -> Output\Delivery Note  78196275.json
+2026-04-28 13:41:46 | INFO  | [OK] Delivery Note  78203415.htm -> Output\Delivery Note  78203415.json
+2026-04-28 13:41:46 | INFO  | [OK] Delivery Note 77535479 .htm -> Output\Delivery Note 77535479 .json
+2026-04-28 13:41:46 | INFO  | [OK] Delivery Note 77672982 .htm -> Output\Delivery Note 77672982 .json
+2026-04-28 13:41:46 | INFO  | [OK] Delivery Note 77946384.htm -> Output\Delivery Note 77946384.json
+2026-04-28 13:41:46 | INFO  | [OK] Delivery Note 78018807 .htm -> Output\Delivery Note 78018807 .json
+2026-04-28 13:41:46 | INFO  | [OK] Delivery Note 78191672 .htm -> Output\Delivery Note 78191672 .json
+2026-04-28 13:41:46 | INFO  | [OK] Delivery Note 78195342.htm -> Output\Delivery Note 78195342.json
+2026-04-28 13:41:46 | INFO  | Program finished
+2026-04-28 13:41:49 | INFO  | Program started
+2026-04-28 13:41:49 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:41:49 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:41:49 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:41:49 | INFO  | Input_dir : Input
+2026-04-28 13:41:49 | INFO  | Output_dir: Output
+2026-04-28 13:41:49 | INFO  | [SKIP] Delivery Note  78196275.htm already parsed-> Output\Delivery Note  78196275.json 
+2026-04-28 13:41:49 | INFO  | [SKIP] Delivery Note  78203415.htm already parsed-> Output\Delivery Note  78203415.json 
+2026-04-28 13:41:49 | INFO  | [SKIP] Delivery Note 77535479 .htm already parsed-> Output\Delivery Note 77535479 .json 
+2026-04-28 13:41:49 | INFO  | [SKIP] Delivery Note 77672982 .htm already parsed-> Output\Delivery Note 77672982 .json 
+2026-04-28 13:41:49 | INFO  | [SKIP] Delivery Note 77946384.htm already parsed-> Output\Delivery Note 77946384.json 
+2026-04-28 13:41:49 | INFO  | [SKIP] Delivery Note 78018807 .htm already parsed-> Output\Delivery Note 78018807 .json 
+2026-04-28 13:41:49 | INFO  | [SKIP] Delivery Note 78191672 .htm already parsed-> Output\Delivery Note 78191672 .json 
+2026-04-28 13:41:49 | INFO  | [SKIP] Delivery Note 78195342.htm already parsed-> Output\Delivery Note 78195342.json 
+2026-04-28 13:41:49 | INFO  | Program finished
+2026-04-28 13:47:54 | INFO  | Program started
+2026-04-28 13:47:54 | INFO  | Base path: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote
+2026-04-28 13:47:54 | INFO  | Python version: 3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+2026-04-28 13:47:54 | INFO  | Config loaded from: C:\Users\wangp2\OneDrive - ZF Friedrichshafen AG\Operation\92_Digital Tools\CVS_OCR\DeliveryNote\config.yaml
+2026-04-28 13:47:54 | INFO  | Input_dir : Input
+2026-04-28 13:47:54 | INFO  | Output_dir: Output
+2026-04-28 13:47:54 | INFO  | [SKIP] Delivery Note  78196275.htm already parsed-> Output\Delivery Note  78196275.json 
+2026-04-28 13:47:54 | INFO  | [SKIP] Delivery Note  78203415.htm already parsed-> Output\Delivery Note  78203415.json 
+2026-04-28 13:47:54 | INFO  | [SKIP] Delivery Note 77535479 .htm already parsed-> Output\Delivery Note 77535479 .json 
+2026-04-28 13:47:54 | INFO  | [SKIP] Delivery Note 77672982 .htm already parsed-> Output\Delivery Note 77672982 .json 
+2026-04-28 13:47:55 | INFO  | [SKIP] Delivery Note 77946384.htm already parsed-> Output\Delivery Note 77946384.json 
+2026-04-28 13:47:55 | INFO  | [SKIP] Delivery Note 78018807 .htm already parsed-> Output\Delivery Note 78018807 .json 
+2026-04-28 13:47:55 | INFO  | [SKIP] Delivery Note 78191672 .htm already parsed-> Output\Delivery Note 78191672 .json 
+2026-04-28 13:47:55 | INFO  | [SKIP] Delivery Note 78195342.htm already parsed-> Output\Delivery Note 78195342.json 
+2026-04-28 13:47:55 | INFO  | Program finished
