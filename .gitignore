@@ -1,49 +1,20 @@
-# Python
+﻿# virtual env
+.venv/
+
+# build artifacts
+/dist
+/build
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
 
-# Virtual Environment
-venv/
-env/
-ENV/
+# runtime output
+logs/
+Output/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# exe
+*.exe
 
-# OS
-.DS_Store
-Thumbs.db
+# backup files
+*.bak
 
-# Output files
-*.json
-!package.json
-
-# Excel reference
-*.xlsx
-*.xls
-
-# PDF
-*.pdf
+# input samples (optional)
+Input/*.htm
