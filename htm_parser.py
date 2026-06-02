@@ -156,6 +156,9 @@ class DeliveryNoteParser:
         self._load()
         self._normalize_lines()
 
+        # ✅ 提取公司表头信息
+        header_lines = self.extract_header_block()
+        company_info = self.parse_company_from_header(header_lines)
         shipping_info = self._extract_shipping_info()
         remark_block = self._extract_remark_block()
 
@@ -168,7 +171,8 @@ class DeliveryNoteParser:
             "联系人": shipping_info["联系人"],
             "联系电话": shipping_info["联系电话"],
             "标明": self._extract_mark_from_remark(remark_block),
-            "项目": self._parse_items()
+            "项目": self._parse_items(),
+            "公司": company_info
         }
         return result
 
@@ -264,7 +268,170 @@ class DeliveryNoteParser:
 
         return text.strip()
     
-    
+    def extract_header_block(self) -> list:
+        # ✅ 已缓存直接返回
+        if hasattr(self, "_header_lines") and self._header_lines:
+            return self._header_lines
+
+        header_lines = []
+
+        for line in self.lines:
+            # ✅ ✅ 优先使用“下划线”为分界（更稳）
+            if re.match(r'^\s*_+\s*$', line):
+                break
+
+            # ✅ fallback：发货单分界
+            if re.search(r'(发货单|Delivery\s*note)', line, re.I):
+                break
+
+            # ✅ 跳过 Copy
+            if line.lower() == "copy":
+                continue
+
+            header_lines.append(line)
+
+            if len(header_lines) > 60:
+                break
+
+        self._header_lines = header_lines
+        return header_lines
+
+
+    def parse_company_from_header(self, header_lines: List[str]) -> dict:
+        company_name = ""
+        address = ""
+        phone = ""
+        fax = ""
+
+        merged_line = ""
+        debug_line = ""
+
+        # ✅ Step1：找分隔线
+        sep_idx = -1
+        for i, line in enumerate(header_lines):
+            if re.match(r'^\s*_+\s*$', line):
+                sep_idx = i
+                break
+
+        # ✅ Step2：取分隔线上面的 block（最多2行有效地址）
+        if sep_idx > 1:
+            block = []
+
+            # ✅ 固定取分隔线上面2行（不做复杂过滤）
+            for j in range(sep_idx - 1, sep_idx - 3, -1):
+                if j >= 0:
+                    l = header_lines[j].strip()
+
+                    if not l:
+                        continue
+                    
+                    # ❌ 只排除电话传真
+                    if re.search(r'(电话|传真|Tel|Fax)', l, re.I):
+                        continue
+
+                    block.append(l)
+
+            block.reverse()
+
+            merged_line = " ".join(block)
+            merged_line = re.sub(r'\s+', ' ', merged_line).strip()
+            debug_line = merged_line
+
+
+        # ✅ ✅ fallback（没有分隔线）
+        elif len(header_lines) >= 2:
+            block = header_lines[-2:]
+            merged_line = " ".join(block)
+            merged_line = re.sub(r'\s+', ' ', merged_line).strip()
+
+        debug_line = merged_line
+
+        # ✅ ✅ ✅ Step3：优先解析 merged_line
+        if merged_line:
+            line = merged_line.replace("，", ",")
+
+            parts = re.split(r'(有限公司|Co\.?,?\s*Ltd\.?)', line)
+
+            if len(parts) >= 3:
+                company_name = (parts[0] + parts[1]).strip()
+                address = parts[2].strip(" ,")
+
+                # ✅ 如果 address 不像地址 → 强制清空
+                if address and not re.search(r'(路|号|Street|Road|\d{5,})', address):
+                    address = ""
+
+        # ✅ ✅ ✅ Step4：fallback（地址补全）
+        if not address:
+            capturing = False
+            addr_parts = []
+
+            for line in header_lines:
+
+                if re.search(r'(地址[:：]|Address)', line):
+                    capturing = True
+
+                    addr = re.sub(r'.*(地址[:：]|Address)', '', line).strip()
+                    if addr:
+                        addr_parts.append(addr)
+                    continue
+
+                if capturing:
+                    if re.search(r'(电话|传真|Tel|Fax)', line, re.I):
+                        break
+                    if re.match(r'^_+$', line):
+                        break
+
+                    addr_parts.append(line)
+
+            address = " ".join(addr_parts)
+
+        # ✅ ✅ ✅ Step5：fallback（公司名）
+        if not company_name:
+            for i, line in enumerate(header_lines[:10]):
+
+                if re.search(r'(Report|Copy|Page)', line, re.I):
+                    continue
+                if re.match(r'^_+$', line):
+                    continue
+
+                if len(line) >= 4:
+                    company_name = line
+
+                    if i + 1 < len(header_lines):
+                        next_line = header_lines[i + 1]
+                        if re.fullmatch(r'(有限公司|公司)', next_line):
+                            company_name += next_line
+
+                    break
+
+        # ✅ ✅ ✅ Step6：电话 / 传真
+        for line in header_lines:
+            if not phone and re.search(r'(电话|Tel|Telephone)', line, re.I):
+                m = re.search(r'(\(?\+?\d+\)?[\d\s\-]{6,})', line)
+                if m:
+                    phone = m.group(1).strip()
+
+            if not fax and re.search(r'(传真|Fax)', line, re.I):
+                m = re.search(r'(\(?\+?\d+\)?[\d\s\-/]{6,})', line)
+                if m:
+                    fax = m.group(1).strip()
+
+        # ✅ ✅ ✅ Step7：清洗
+        address = address.replace("商 务", "商务")
+        address = address.replace("中 心", "中心")
+        address = address.replace("国 际", "国际")
+
+        address = re.sub(r'_+', '', address)
+        address = re.sub(r'\s+', ' ', address).strip()
+
+        return {
+            "name": company_name.strip(),
+            "address": address,
+            "phone": phone,
+            "fax": fax,
+            #debug only
+            #"_merged_line_debug": debug_line
+        }
     # ----------------------------
     # 备注区块（核心）
     # ----------------------------
