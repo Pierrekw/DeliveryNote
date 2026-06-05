@@ -11,6 +11,7 @@ import sys
 from bs4 import BeautifulSoup
 from typing import List, Dict
 import yaml
+import shutil
 
 import logging
 from logging.handlers import TimedRotatingFileHandler
@@ -685,6 +686,10 @@ class DeliveryNoteParser:
 
 def process_all_htm_files(input_dir: str, output_dir: str, config: dict):
     os.makedirs(output_dir, exist_ok=True)
+    
+    bak_dir = os.path.join(input_dir, "BAK")
+    os.makedirs(bak_dir, exist_ok=True)
+
 
     for file in os.listdir(input_dir):
         if not file.lower().endswith(".htm"):
@@ -707,12 +712,40 @@ def process_all_htm_files(input_dir: str, output_dir: str, config: dict):
             
             if os.path.exists(out_path) and not overwrite:
                 logger.info(f"[SKIP] {file} already parsed-> {out_path} ")
+                
+                # ✅ 先移动，再 continue
+                bak_path = os.path.join(bak_dir, file)
+
+                if os.path.exists(bak_path):
+                    base, ext = os.path.splitext(file)
+                    bak_path = os.path.join(
+                        bak_dir,
+                        f"{base}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{ext}"
+                    )
+
+                shutil.move(path, bak_path)
+                logger.info(f"[MOVED][SKIP] {file} -> {bak_path}")
+
                 continue
             
             with open(out_path, "w", encoding="utf-8") as f:
                 json.dump(result, f, ensure_ascii=False, indent=2)
             
             logger.info(f"[OK] {file} -> {out_path}")  
+            
+            # 移动原HTM到BAK目录
+            bak_path = os.path.join(bak_dir, file)
+
+            # 如果BAK里已存在同名文件，加时间戳避免覆盖
+            if os.path.exists(bak_path):
+                base, ext = os.path.splitext(file)
+                bak_path = os.path.join(
+                    bak_dir,
+                    f"{base}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{ext}"
+                )
+
+            shutil.move(path, bak_path)
+            logger.info(f"[MOVED][OK] {file} -> {bak_path}")
 
         except Exception:
             logger.exception(f"[FAIL]{file}")

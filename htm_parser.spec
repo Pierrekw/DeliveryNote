@@ -5,13 +5,14 @@ a = Analysis(
     ['htm_parser.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('config.yaml', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
     noarchive=False,
+    optimize=0,
 )
 pyz = PYZ(a.pure)
 
@@ -21,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='htm_parser',
+    name='HTM_Parser',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
