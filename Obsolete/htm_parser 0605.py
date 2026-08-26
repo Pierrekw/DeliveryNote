@@ -90,8 +90,7 @@ def load_config(config_path: str = "config.yaml") -> dict:
             "output_dir": "Output"
         },
         "process": {
-            "overwrite": False,
-            "move_to_bak": True # ✅ 新增默认值：缺省保持原行为（移动到 BAK）
+            "overwrite": False
         },
         "keywords": {
             "remark_start": ["备注"],
@@ -132,15 +131,8 @@ DATE_KEYS = ["日期", "Date"]
 CUSTOMER_KEYS = ["客户编号", "Customer No."]
 
 #ITEM_LINE_RE = re.compile(r"^(\d{3})\s+([A-Z0-9]{6,})\s+(.*)")
-# ✅ 放宽行号为 3~6 位，兼容 6 位行号
-ITEM_LINE_RE = re.compile(r"^\s*(\d{3})\s+((?=[A-Z0-9]*\d)[A-Z0-9]{6,})\s*(.*)")
+ITEM_LINE_RE = re.compile(r"^\s*(\d{3})\s+([A-Z0-9]{6,})\s+(.*)")
 DATE_RE = re.compile(r"\b\d{2}\.\d{2}\.\d{4}\b")
-# ✅ 数量：允许小数/千分位（28.000EA -> 28）
-QTY_RE = re.compile(r"(\d[\d.,]*)\s*EA\b")
-# ✅ 国家 + 数量锚点
-COUNTRY_QTY_RE = re.compile(r"([A-Z]{2})\s+(\d[\d.,]*)\s*EA\b")
-# ✅ 贵方订单号常见形态（P + 数字）
-CUST_ORDER_RE = re.compile(r"P\d{6,}")
 PHONE_MOBILE_RE = re.compile(r"\b1\d{10}\b")
 PHONE_LANDLINE_RE = re.compile(r"\b(?:\+86\s?)?0\d{2,3}[-\s]?\d{7,8}\b")
 
@@ -589,163 +581,103 @@ class DeliveryNoteParser:
     # 项目解析（多页安全）
     # ----------------------------
     
-    def _item_col_x(self):
-        """\u8fd4\u56de\u9879\u76ee\u8868\u5934\u4e2d\uff08\u8d35\u65b9\u96f6\u4ef6\u53f7 X, \u8d35\u65b9\u5b9a\u5355\u53f7 X\uff09\uff0c\u7528\u4e8e\u6309\u5217\u5750\u6807\u5224\u5b9a\u5f52\u5c5e\u3002"""
-        if hasattr(self, "_col_x_cache"):
-            return self._col_x_cache
-        x_part, x_order = 8, 23   # 默认值（找不到表头时兜底）
-        for l in self.raw_lines:
-            if "\u8d35\u65b9\u96f6\u4ef6\u53f7" in l and ("\u8d35\u65b9\u5b9a\u5355\u53f7" in l or "\u8d35\u65b9\u8ba2\u5355\u53f7" in l):
-                xp = l.find("\u8d35\u65b9\u96f6\u4ef6\u53f7")
-                xo = l.find("\u8d35\u65b9\u5b9a\u5355\u53f7")
-                if xo < 0:
-                    xo = l.find("\u8d35\u65b9\u8ba2\u5355\u53f7")
-                if xp >= 0 and xo > xp:
-                    x_part, x_order = xp, xo
-                break
-        self._col_x_cache = (x_part, x_order)
-        return self._col_x_cache
-
     def _parse_items(self) -> List[Dict]:
         items = []
         i = 0
-        n = len(self.raw_lines)
 
-        while i < n:
+        while i < len(self.raw_lines):
             m = ITEM_LINE_RE.match(self.raw_lines[i])
             if not m:
                 i += 1
                 continue
 
             item = {
-                "\u9879\u76ee\u884c\u53f7": m.group(1),
-                "\u96f6\u4ef6\u53f7": m.group(2),
-                "\u540d\u5b57": "",
-                "\u8d35\u65b9\u96f6\u4ef6\u53f7": "",
-                "\u8d35\u65b9\u8ba2\u5355\u53f7": "",
+                "项目行号": m.group(1),
+                "零件号": m.group(2),
+                "名字": "",
+                "贵方零件号": "",
+                "贵方订单号": "",
                 "Our Order No.": "",
-                "\u8981\u6c42\u5230\u8d27\u65e5\u671f": "",
-                "\u6570\u91cf": ""
+                "要求到货日期": "",
+                "数量": ""
             }
 
-            # ---------- \u540d\u5b57 / \u56fd\u5bb6 / \u6570\u91cf\uff08\u652f\u6301\u8de8\u884c\uff09 ----------
-            desc = m.group(3).strip()
+            rest = m.group(3)
+
+            # ---------- 数量 ----------
+            qty = re.search(r"(\d+)\s*EA", rest)
+            if qty:
+                item["数量"] = qty.group(1)
+
+            # ---------- 国家（不写死） ----------
+            m_country = re.search(r"\b[A-Z]{2}\b", rest)
+
+            # ---------- 名字边界 ----------
+            if m_country:
+                item["名字"] = rest[:m_country.start()].strip()
+            elif qty:
+                item["名字"] = rest[:qty.start()].strip()
+            else:
+                item["名字"] = rest.strip()
+
+            item["名字"] = self._clean_text(item["名字"])
+
+            # ---------- 扫描子行 ----------
             j = i + 1
-            # \u82e5\u672c\u884c\u672a\u51fa\u73b0\u6570\u91cf(EA)\uff0c\u540d\u5b57\u53ef\u80fd\u88ab HTML \u6362\u884c\u62c6\u5f00\uff0c\u5411\u4e0b\u62fc\u63a5
-            while j < n and not QTY_RE.search(desc):
-                nxt = self.raw_lines[j].strip()
-                if not nxt or nxt == "--":
-                    j += 1
-                    continue
-                # \u9047\u5230\u5b50\u884c\u786c\u8fb9\u754c\u5219\u505c
-                if nxt.lower().startswith("colli") or DATE_RE.fullmatch(nxt):
-                    break
-                if ITEM_LINE_RE.match(self.raw_lines[j]):
-                    break
-                desc = (desc + " " + nxt).strip()
+
+            while j < len(self.raw_lines) and not ITEM_LINE_RE.match(self.raw_lines[j]):
+                line = self.raw_lines[j].strip()
+
+                # 🚧 项目内硬边界：colli
+                if line.lower().startswith("colli"):
+                    break  # ✅ 当前项目结束，直接跳出子行扫描
+
+                # ✅ 订单子行解析（只要 Our Order No. 还没拿到就继续）
+                if not item["Our Order No."]:
+                    cols = re.split(r"\s{2,}", line)
+                    cols = [c for c in cols if c]
+
+                    found = False
+
+                    # 1️⃣ 表格对齐型（多空格）
+                    for idx in range(len(cols) - 1, -1, -1):
+                        if re.fullmatch(r"\d{6,}", cols[idx]):
+                            item["Our Order No."] = cols[idx]
+
+                            left = cols[:idx]
+                            if left:
+                                item["贵方订单号"] = self._clean_text(left[-1])
+                            if len(left) >= 2:
+                                item["贵方零件号"] = self._clean_text(left[-2])
+
+                            found = True
+                            break
+
+                    # 2️⃣ fallback：单空格压缩型（6275）
+                    if not found:
+                        nums = re.findall(r"\b\d{6,}\b", line)
+                        if nums:
+                            item["Our Order No."] = nums[-1]
+
+                            prefix = line[:line.rfind(nums[-1])].strip()
+                            parts = prefix.split()
+
+                            if parts:
+                                item["贵方订单号"] = self._clean_text(parts[-1])
+                            if len(parts) >= 2:
+                                item["贵方零件号"] = self._clean_text(parts[-2])
+
+                # ✅ 日期行
+                m_date = DATE_RE.search(line)
+                if m_date:
+                    item["要求到货日期"] = m_date.group()
+
                 j += 1
 
-            desc = self._clean_text(desc)
-
-            cq = COUNTRY_QTY_RE.search(desc)
-            if cq:
-                item["数量"] = cq.group(2).split(".")[0].split(",")[0]
-                s = cq.start()
-                prev1 = desc[s - 1] if s >= 1 else " "
-                prev2 = desc[s - 2] if s >= 2 else " "
-                # 连写型号不剥离：国家码前紧挨两个连续大写字母(如 CVDE 的 DE)→判为型号，保留
-                # 反例 24VCN：CN 前是 V、V 前是数字 4 → 仍按国家码剥离为 24V
-                is_model = (prev1.isascii() and prev1.isalpha() and prev1.isupper()
-                            and prev2.isascii() and prev2.isalpha() and prev2.isupper())
-                if is_model:
-                    item["名字"] = desc[:s + 2].strip()   # 保留这2个字母
-                else:
-                    name = desc[:s]
-                    glued = s > 0 and not desc[s - 1].isspace()
-                    name = name.strip()
-                    if glued:
-                        name = re.sub(r"[\s\xa0]+[A-Z]$", "", name).strip()
-                    item["名字"] = name
-            else:
-
-                q = QTY_RE.search(desc)
-                if q:
-                    item["\u6570\u91cf"] = q.group(1).split(".")[0].split(",")[0]
-                    item["\u540d\u5b57"] = desc[:q.start()].strip()
-                else:
-                    item["\u540d\u5b57"] = desc.strip()
-
-            # \u540d\u5b57\u5c3e\u90e8\u53ef\u80fd\u6b8b\u7559\u5355\u4e2a\u56fd\u5bb6\u7801\uff08\u5982 "... 24V U" \u4e0d\u52a8\uff1b\u4f46 "...Dynamic HU" \u9700\u5220\uff09
-            item["\u540d\u5b57"] = self._clean_text(item["\u540d\u5b57"])
-
-            # ---------- \u626b\u63cf\u5b50\u884c\uff1a\u8ba2\u5355\u884c / \u65e5\u671f\u884c ----------
-            k = j
-            while k < n and not ITEM_LINE_RE.match(self.raw_lines[k]):
-                line = self.raw_lines[k].strip()
-
-                if line.lower().startswith("colli"):
-                    break
-
-                # \u65e5\u671f\u884c
-                if not item["\u8981\u6c42\u5230\u8d27\u65e5\u671f"]:
-                    md = DATE_RE.search(line)
-                    if md:
-                        item["\u8981\u6c42\u5230\u8d27\u65e5\u671f"] = md.group()
-                        k += 1
-                        continue
-
-                # \u8ba2\u5355\u884c\uff1a\u6309\u5217 X \u5750\u6807\u5224\u5b9a\u4ef6\u53f7 / \u8ba2\u5355\u53f7\uff08\u53f3\u4fa7\u4e3a Our Order No.\uff09
-                if not item["Our Order No."]:
-                    raw_sub = self.raw_lines[k]
-                    # \u53d6\u6700\u53f3\u4fa7 Our Order No.\uff0c\u5141\u8bb8\u524d\u9762\u7c98\u4e2d\u6587\uff08\u5982 \u51fa115943916\uff09
-                    mlast = None
-                    for mm in re.finditer(r"[\u4e00-\u9fa5]*(\d{6,})", raw_sub):
-                        mlast = mm
-                    if mlast:
-                        item["Our Order No."] = mlast.group(1)
-                        remaining = raw_sub[:mlast.start()].rstrip()
-
-                        x_part, x_order = self._item_col_x()
-                        thresh = (x_part + x_order) / 2.0
-
-                        # \u6309 2+ \u7a7a\u683c\u5207\u5217\uff0c\u5e76\u8bb0\u5f55\u6bcf\u5217\u8d77\u59cb X
-                        cols = []
-                        for cm in re.finditer(r"\S(?:.*?\S)?(?=\s{2,}|$)", remaining):
-                            tok = cm.group().strip()
-                            if tok:
-                                cols.append((cm.start(), tok))
-
-                        for x0, tok in cols:
-                            # \u7c98\u8fde\u60c5\u51b5\uff1a\u4ef6\u53f7\u4e0e P \u8ba2\u5355\u53f7\u8d34\u5728\u4e00\u8d77
-                            mo = CUST_ORDER_RE.search(tok)
-                            if mo and mo.start() > 0:
-                                pno = tok[:mo.start()].strip()
-                                ono = tok[mo.start():].strip()
-                                if pno and not item["\u8d35\u65b9\u96f6\u4ef6\u53f7"]:
-                                    item["\u8d35\u65b9\u96f6\u4ef6\u53f7"] = self._clean_text(pno)
-                                if ono and not item["\u8d35\u65b9\u8ba2\u5355\u53f7"]:
-                                    item["\u8d35\u65b9\u8ba2\u5355\u53f7"] = self._clean_text(ono)
-                                continue
-                            # \u6309\u5217 X \u5224\u5b9a\u5f52\u5c5e\uff08\u9760\u53f3\u2192\u8ba2\u5355\u53f7\uff0c\u9760\u5de6\u2192\u4ef6\u53f7\uff09
-                            if x0 >= thresh:
-                                if not item["\u8d35\u65b9\u8ba2\u5355\u53f7"]:
-                                    item["\u8d35\u65b9\u8ba2\u5355\u53f7"] = self._clean_text(tok)
-                                elif not item["\u8d35\u65b9\u96f6\u4ef6\u53f7"]:
-                                    item["\u8d35\u65b9\u96f6\u4ef6\u53f7"] = self._clean_text(tok)
-                            else:
-                                if not item["\u8d35\u65b9\u96f6\u4ef6\u53f7"]:
-                                    item["\u8d35\u65b9\u96f6\u4ef6\u53f7"] = self._clean_text(tok)
-                                elif not item["\u8d35\u65b9\u8ba2\u5355\u53f7"]:
-                                    item["\u8d35\u65b9\u8ba2\u5355\u53f7"] = self._clean_text(tok)
-                        k += 1
-                        continue
-
-                k += 1
-
             items.append(item)
-            i = k if k > i else i + 1
+            i = j
 
-        return items
+        return items    
     
 
 # ----------------------------
@@ -772,7 +704,6 @@ def process_all_htm_files(input_dir: str, output_dir: str, config: dict):
             out_path = os.path.join(output_dir, file.replace(".htm", ".json"))
             
             overwrite = config.get("process", {}).get("overwrite", False)
-            move_to_bak = config.get("process", {}).get("move_to_bak", True) # ✅ 新增
    
             if os.path.exists(out_path) and overwrite:
                 bak = out_path + f".bak.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
@@ -781,45 +712,40 @@ def process_all_htm_files(input_dir: str, output_dir: str, config: dict):
             
             if os.path.exists(out_path) and not overwrite:
                 logger.info(f"[SKIP] {file} already parsed-> {out_path} ")
-
-                # ✅ 仅当开关打开时才移动
-                if move_to_bak:
-                    bak_path = os.path.join(bak_dir, file)
-                    if os.path.exists(bak_path):
-                        base, ext = os.path.splitext(file)
-                        bak_path = os.path.join(
-                            bak_dir,
-                            f"{base}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{ext}"
-                        )
-                    shutil.move(path, bak_path)
-                    logger.info(f"[MOVED][SKIP] {file} -> {bak_path}")
-                else:
-                    logger.info(f"[KEEP][SKIP] {file} 保留在 Input（move_to_bak=false）")
-
-                continue
-            
-            
-            with open(out_path, "w", encoding="utf-8") as f:
-                json.dump(result, f, ensure_ascii=False, indent=2)
-            
-            logger.info(f"[OK] {file} -> {out_path}")
-
-            # ✅ 仅当开关打开时才移动原 HTM 到 BAK
-            if move_to_bak:
-                # 移动原HTM到BAK目录
-                bak_path = os.path.join(bak_dir, file)
                 
-                # 如果BAK里已存在同名文件，加时间戳避免覆盖
+                # ✅ 先移动，再 continue
+                bak_path = os.path.join(bak_dir, file)
+
                 if os.path.exists(bak_path):
                     base, ext = os.path.splitext(file)
                     bak_path = os.path.join(
                         bak_dir,
                         f"{base}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{ext}"
                     )
+
                 shutil.move(path, bak_path)
-                logger.info(f"[MOVED][OK] {file} -> {bak_path}")
-            else:
-                logger.info(f"[KEEP][OK] {file} 保留在 Input（move_to_bak=false）")
+                logger.info(f"[MOVED][SKIP] {file} -> {bak_path}")
+
+                continue
+            
+            with open(out_path, "w", encoding="utf-8") as f:
+                json.dump(result, f, ensure_ascii=False, indent=2)
+            
+            logger.info(f"[OK] {file} -> {out_path}")  
+            
+            # 移动原HTM到BAK目录
+            bak_path = os.path.join(bak_dir, file)
+
+            # 如果BAK里已存在同名文件，加时间戳避免覆盖
+            if os.path.exists(bak_path):
+                base, ext = os.path.splitext(file)
+                bak_path = os.path.join(
+                    bak_dir,
+                    f"{base}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{ext}"
+                )
+
+            shutil.move(path, bak_path)
+            logger.info(f"[MOVED][OK] {file} -> {bak_path}")
 
         except Exception:
             logger.exception(f"[FAIL]{file}")

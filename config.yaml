@@ -10,7 +10,8 @@ log:
   level: INFO   # INFO / DEBUG
   
 process:
-  overwrite: false  # 是否覆盖已解析文件
+  overwrite: true  # 是否覆盖已解析文件
+  move_to_bak: false # ✅ 新增：解析后是否把 htm 移动到 BAK 文件夹（测试开发时设 false，可反复解析同一批文件）
 
 keywords:
   remark_start:

@@ -13,8 +13,13 @@ Output/
 # exe
 *.exe
 
+Obsolete/
+
 # backup files
 *.bak
 
 # input samples (optional)
 Input/*.htm
+Input/BAK/
+Input/Test HTM/*
+
